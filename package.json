@@ -9,6 +9,7 @@
   "author": "Luis Ramos <luissquall@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "boom": "^7.2.0",
     "cheerio": "^1.0.0-rc.2",
     "dotenv": "^6.0.0",
     "hapi": "^17.5.2",

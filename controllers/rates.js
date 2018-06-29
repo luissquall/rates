@@ -1,5 +1,6 @@
 const rp = require('request-promise-native');
 const cheerio = require('cheerio');
+const Boom = require('boom');
 
 exports.convert = async function (request, h) {
     let options = {
@@ -49,23 +50,13 @@ exports.convert = async function (request, h) {
                     }
                 };
             } else {
-                response = {
-                    error: {
-                        code: 500,
-                        message: 'Banamex entity was not found'
-                    }
-                }
+				response = Boom.failedDependency('Banamex entity was not found');
             }
 
             return response;
         })
         .catch((err) => {
-            return {
-                error: {
-                    code: 500,
-                    message: err.toString()
-                }
-            };
+			return Boom.failedDependency(err.toString());
         });
 
     return response;
