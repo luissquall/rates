@@ -42,6 +42,8 @@ exports.convert = async function (request, h) {
                         from: 'USD',
                         to: 'MXN',
                         rate: result.sell,
+                        buy: result.buy,
+                        sell: result.sell,
                         entity: result.entity,
                         source: {
                             name: 'ElDolar.Info',
