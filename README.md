@@ -22,6 +22,7 @@ At the moment there's only one endpoint: `/usd/mxn`.
 See Now's [Get started](https://zeit.co/now#get-started).
 
 ```bash
+# This option will allow you to use a dotenv environment config file ./env
 now --dotenv
 now ls
 ```
