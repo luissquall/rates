@@ -1,6 +1,7 @@
 const rp = require('request-promise-native');
 const cheerio = require('cheerio');
 const Boom = require('boom');
+const kebabCase = require('lodash.kebabcase');
 
 exports.convert = async function (request, h) {
     let options = {
@@ -12,20 +13,22 @@ exports.convert = async function (request, h) {
 
     let response = await rp(options)
         .then(($) => {
-            let result = null;
-            let response = {data: []};
+			let rates = [];
+			let result = null;
+			let response = {};
 
-            $('#dllsTable tbody > tr').each((i, el) => {
-                let $row = $(el);
-                let entity = $row.find('td').first().find('.small-hide').text();
-                let buy = $($row.find('td.xTimes')[0]).text();
-                let sell = $($row.find('td.xTimes')[1]).text();;
+			$('#dllsTable tbody > tr').each((i, el) => {
+				let $row = $(el);
+				let entity = $row.find('td').first().find('.small-hide').text();
+				let buy = $($row.find('td.xTimes')[0]).text();
+				let sell = $($row.find('td.xTimes')[1]).text();;
 
-                if (!sell) {
-                    sell = buy;
-                }
+				if (!sell) {
+					sell = buy;
+				}
 
-				response.data.push({
+				rates.push({
+					key: kebabCase(entity),
 					from: 'USD',
 					to: 'MXN',
 					rate: sell,
@@ -37,7 +40,24 @@ exports.convert = async function (request, h) {
 						url: options.uri
 					}
 				});
-            });
+			});
+
+			if (request.params.entity) {
+				for (let rate of rates) {
+					if (rate.key == request.params.entity) {
+						result = rate;
+						break;
+					}
+				}
+
+				if (result) {
+					response = {data: result};
+				} else {
+					response = Boom.failedDependency(`Entity ${request.params.entity} was not found`);
+				}
+			} else {
+				response = {data: rates};
+			}
 
             return response;
         })

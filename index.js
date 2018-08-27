@@ -16,7 +16,7 @@ const server = Hapi.server({
 // Add the route
 server.route({
     method: 'GET',
-    path: '/usd/mxn',
+    path: '/usd/mxn/{entity?}',
     handler: Rates.convert
 });
 

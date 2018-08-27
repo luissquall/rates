@@ -31,4 +31,3 @@ now ls
 1. Change default Hapi error messages format
 2. Add more exchange rate sources
 3. Add more currencies
-4. Add option to change default entity using a query parameter (`entity=Bancomer`)
