@@ -12,9 +12,8 @@ exports.convert = async function (request, h) {
 
     let response = await rp(options)
         .then(($) => {
-            let rates = [];
             let result = null;
-            let response = {};
+            let response = {data: []};
 
             $('#dllsTable tbody > tr').each((i, el) => {
                 let $row = $(el);
@@ -26,34 +25,19 @@ exports.convert = async function (request, h) {
                     sell = buy;
                 }
 
-                rates.push({ entity, buy, sell });
+				response.data.push({
+					from: 'USD',
+					to: 'MXN',
+					rate: sell,
+					buy: buy,
+					sell: sell,
+					entity: entity,
+					source: {
+						name: 'ElDolar.Info',
+						url: options.uri
+					}
+				});
             });
-
-            for (let rate of rates) {
-                if (rate.entity.match(/Banamex/i)) {
-                    result = rate;
-                    break;
-                }
-            }
-
-            if (result) {
-                response = {
-                    data: {
-                        from: 'USD',
-                        to: 'MXN',
-                        rate: result.sell,
-                        buy: result.buy,
-                        sell: result.sell,
-                        entity: result.entity,
-                        source: {
-                            name: 'ElDolar.Info',
-                            url: options.uri
-                        }
-                    }
-                };
-            } else {
-				response = Boom.failedDependency('Banamex entity was not found');
-            }
 
             return response;
         })
