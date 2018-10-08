@@ -15,7 +15,8 @@ curl http://localhost:9000/usd/mxn
 
 ## Endpoints
 
-At the moment there's only one endpoint: `/usd/mxn`.
+1. `/usd/mxn/{entity?}`
+2. `/eur/mxn/{entity?}`
 
 ## Deploy to Now
 
@@ -31,4 +32,3 @@ now ls
 
 1. Change default Hapi error messages format
 2. Add more exchange rate sources
-3. Add more currencies

@@ -13,11 +13,16 @@ const server = Hapi.server({
     port: process.env.PORT
 });
 
-// Add the route
+// Add the routes
 server.route({
-    method: 'GET',
-    path: '/usd/mxn/{entity?}',
-    handler: Rates.convert
+	method: 'GET',
+	path: '/usd/mxn/{entity?}',
+	handler: Rates.convert
+});
+server.route({
+	method: 'GET',
+	path: '/eur/mxn/{entity?}',
+	handler: Rates.convert
 });
 
 // Start the server
