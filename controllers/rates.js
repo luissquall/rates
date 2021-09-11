@@ -29,7 +29,7 @@ function formatResponse(rates, entity) {
 
 const Rates = {
 	async usd_mxn(entity) {
-		const url = 'http://www.eldolar.info/en/mexico/dia/hoy';
+		const url = 'https://www.eldolar.info/en/mexico/dia/hoy';
 		let response = {};
 
 		try {
