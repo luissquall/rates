@@ -1,4 +1,4 @@
-const rp = require('request-promise-native');
+const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const Boom = require('boom');
 const kebabCase = require('lodash.kebabcase');
@@ -29,17 +29,16 @@ function formatResponse(rates, entity) {
 
 const Rates = {
 	async usd_mxn(entity) {
-		let options = {
-			uri: 'http://www.eldolar.info/en/mexico/dia/hoy',
-			transform: (body) => {
-				return cheerio.load(body);
-			}
-		};
+		const url = 'http://www.eldolar.info/en/mexico/dia/hoy';
+		let response = {};
 
-		let response = await rp(options)
-			.then(($) => {
+		try {
+			const _resp = await fetch(url);
+
+			if (_resp.ok) {
+				const body = await _resp.text();
+				const $ = cheerio.load(body);
 				let rates = [];
-				let result = null;
 
 				// Find & extract exchange rates
 				$('#dllsTable tbody > tr').each((i, el) => {
@@ -62,59 +61,65 @@ const Rates = {
 						entity: entity,
 						source: {
 							name: 'ElDolar.Info',
-							url: options.uri
+							url: url
 						}
 					});
 				});
 
-				return formatResponse(rates, entity);
-			})
-			.catch((err) => {
-				return Boom.failedDependency(err.toString());
-			});
+				response = formatResponse(rates, entity);
+			}
+		} catch (error) {
+			// Errors originating from node core libraries, like network errors, and
+			// operational errors which are instances of FetchError
+			return Boom.failedDependency(error.toString());
+		}
 
 		return response;
 	},
 
 	async eur_mxn(entity) {
 		// Free plan provides hourly updates
-		let options = {
-			uri: 'https://openexchangerates.org/api/latest.json',
+		const url = 'https://openexchangerates.org/api/latest.json';
+		const options = {
 			headers: {
 				'Authorization': `Token ${process.env.OPEN_EXCHANGE_RATE_KEY}`
-			},
-			json: true
+			}
 		};
+		let response = {};
 
 		if (entity && entity != 'open-exchange-rates') {
 			return Boom.failedDependency(`Entity ${entity} was not found`);
 		}
 
-		let response = await rp(options).then(data => {
-			let rates = [];
-			let result = null;
-			let sell = data.rates.MXN / data.rates.EUR;
-			let buy = sell;
+		try {
+			const _resp = await fetch(url, options);
+			const data = await _resp.json();
 
-			rates.push({
-				key: 'open-exchange-rates',
-				from: 'EUR',
-				to: 'MXN',
-				timestamp: data.timestamp,
-				rate: sell,
-				buy: buy,
-				sell: sell,
-				entity: 'Open Exchange Rates',
-				source: {
-					name: 'Open Exchange Rates',
-					url: 'https://openexchangerates.org/'
-				}
-			});
+			if (_resp.ok) {
+				let rates = [];
+				let sell = data.rates.MXN / data.rates.EUR;
+				let buy = sell;
 
-			return formatResponse(rates, entity);
-		}).catch((err) => {
-			return Boom.failedDependency(err.toString());
-		});
+				rates.push({
+					key: 'open-exchange-rates',
+					from: 'EUR',
+					to: 'MXN',
+					timestamp: data.timestamp,
+					rate: sell,
+					buy: buy,
+					sell: sell,
+					entity: 'Open Exchange Rates',
+					source: {
+						name: 'Open Exchange Rates',
+						url: 'https://openexchangerates.org/'
+					}
+				});
+
+				response = formatResponse(rates, entity);
+			}
+		} catch (error) {
+			return Boom.failedDependency(error.toString());
+		}
 
 		return response;
 	}
