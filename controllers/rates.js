@@ -45,7 +45,7 @@ const Rates = {
 					let $row = $(el);
 					let entity = $row.find('td').first().find('.small-hide').text();
 					let buy = $($row.find('td.xTimes')[0]).text();
-					let sell = $($row.find('td.xTimes')[1]).text();;
+					let sell = $($row.find('td.xTimes')[1]).text();
 
 					if (!sell) {
 						sell = buy;
