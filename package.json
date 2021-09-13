@@ -14,9 +14,9 @@
   "license": "MIT",
   "dependencies": {
     "@hapi/boom": "^9.1.4",
+    "@hapi/hapi": "^20.1.5",
     "cheerio": "^1.0.0-rc.2",
     "dotenv": "^6.0.0",
-    "hapi": "^17.5.2",
     "lodash.kebabcase": "^4.1.1",
     "node-fetch": "^2.6.2"
   },

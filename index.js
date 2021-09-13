@@ -3,7 +3,7 @@
 // Import modules
 require('dotenv').config();
 
-const Hapi =  require('hapi');
+const Hapi = require('@hapi/hapi');
 
 // Controllers
 const Rates = require('./controllers/rates.js');
