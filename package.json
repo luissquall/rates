@@ -7,6 +7,10 @@
     "start": "node ./index.js"
   },
   "author": "Luis Ramos <luissquall@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luissquall/rates"
+  },
   "license": "MIT",
   "dependencies": {
     "@hapi/boom": "^9.1.4",
