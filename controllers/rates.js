@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-const Boom = require('boom');
+const Boom = require('@hapi/boom');
 const kebabCase = require('lodash.kebabcase');
 
 function formatResponse(rates, entity) {
